@@ -4,6 +4,7 @@ import Home from '../pages/Home.vue'
 import Profile from '../pages/Profile.vue'
 import Login from '../pages/auth/Login.vue'
 import Register from '../pages/auth/Register.vue'
+import NewPost from '../pages/post/New.vue'
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,12 @@ const routes = [
     name: 'Register',
    component: Register,
    meta: { guestOnly: true }
+  },
+  {
+    path: '/post/new',
+    name: 'post-create',
+    component: NewPost,    
+    meta: { authOnly: true }
   }
 ]
 

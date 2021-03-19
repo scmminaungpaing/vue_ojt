@@ -55,6 +55,7 @@ export default {
       this.isLoggedIn = false;
       axios.post('http://127.0.0.1:8000/api/logout').then(() => {           
         localStorage.removeItem('token');    
+        this.$store.dispatch('emptyUser',{});
         this.$router.push('Login');
       })
     },

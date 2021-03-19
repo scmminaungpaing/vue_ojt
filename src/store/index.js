@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex)
 
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     SET_USER(state, user){
       state.user = user
+    },
+    SET_EMPTY(state, data){
+      state.user = data
     }
   },
   actions: {
@@ -32,8 +36,13 @@ export default new Vuex.Store({
       }).catch(error => {
         console.log(error.data);
       });
-    }
+    },
+    emptyUser({commit},data){
+      commit('SET_EMPTY',data);
+    },   
   },
   getters: {
-  }
+  },
+
+  plugins: [createPersistedState()],
 })
