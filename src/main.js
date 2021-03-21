@@ -7,6 +7,7 @@ import axios from 'axios'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Form, HasError, AlertError } from 'vform'
+import Swal from 'sweetalert2'
 
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
@@ -15,6 +16,7 @@ Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.config.productionTip = false;
 
 window.Form = Form;
+window.Swal = Swal;
 
 new Vue({
   router,

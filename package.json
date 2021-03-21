@@ -19,6 +19,7 @@
     "laravel-vue-pagination": "^2.3.1",
     "popper.js": "^1.16.1",
     "sockjs": "^0.3.21",
+    "sweetalert2": "^10.15.6",
     "vform": "^1.0.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",

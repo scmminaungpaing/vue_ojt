@@ -1,12 +1,12 @@
 <template>
   <div id="new" class="container mt-5">
     <div class="d-flex justify-content-between mb-4">
-      <h3>Create New Post</h3>
+      <h3>Edit Post</h3>
       <router-link to="/" class="btn btn-secondary btn-sm py-2 px-3"
         ><i class="fas fa-caret-left"></i> Back</router-link
       >
     </div>
-    <form @submit.prevent="createPost" @keydown="form.onKeydown($event)">
+    <form @submit.prevent="editPost(id)" @keydown="form.onKeydown($event)">
       <div class="form-group">
         <div class="row">
           <div class="col-sm-12">
@@ -61,7 +61,7 @@
       </div>
       <input type="hidden" :value="form.user_id" name="user_id" />
       <button :disabled="form.busy" type="submit" class="btn btn-primary">
-        Create Post
+        Update Post
       </button>
     </form>
   </div>
@@ -72,29 +72,26 @@ import Form from 'vform';
 export default {
   data() {
     return {
+      id:'',
       // Create a new form instance
       form: new Form({
         title: "",
         description: "",
-        publish: true,
+        publish: false,
         user_id: "",
       }),
     };
   },
   methods:{
-    createPost(){
-      this.form.post('http://127.0.0.1:8000/api/post').then(() =>{
+    editPost(id){
+      this.form.put('http://127.0.0.1:8000/api/post/'+id).then(()=>{
         this.$router.push('/');
-     });
+      });
     }
   },
-  mounted(){
-    this.form.user_id = this.authUser.id;
-  },
-  computed:{
-    authUser(){
-      return this.$store.state.user;
-    }
+  mounted() {
+    this.id = this.$route.params.id;
+    this.form.fill(this.$route.params.post);
   }
 };
 </script>
