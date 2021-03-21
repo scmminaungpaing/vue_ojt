@@ -89,8 +89,10 @@ export default {
   methods: {
     login() {
       // Submit the form via a POST request
-      this.form.post("http://127.0.0.1:8000/api/register").then(({ data }) => {
-        console.log(data);
+      this.form.post("http://127.0.0.1:8000/api/register").then(() => {
+        this.$router.push('/login');
+      }).catch(($errors)=>{
+        console.log($errors.data);
       });
     },
   },

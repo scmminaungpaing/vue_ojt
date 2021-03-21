@@ -28,7 +28,7 @@
           </ul>
           <ul class="navbar-nav ml-auto" v-else>
             <li class="nav-item my-1">
-              <router-link to="/profile" class="nav-link"><i class="fas fa-user mr-1"></i> <b>User</b> |</router-link>
+              <router-link to="/profile" class="nav-link"><i class="fas fa-user mr-1"></i> <b>{{ user.name}}</b> |</router-link>
             </li>
             <li class="nav-item my-1">
               <a @click="logout" class="nav-link btn btn-primary btn-sm ml-2 text-white"><i class="fas fa-power-off mr-1"></i> Logout</a>
@@ -66,7 +66,11 @@ export default {
     })
     this.isLoggedIn = !!localStorage.getItem('token');
   },
-
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  }
 }
 </script>
 
