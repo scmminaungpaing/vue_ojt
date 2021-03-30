@@ -1,7 +1,7 @@
 <template>
   <div id="about">
     <div class="container mt-4">
-      <h2 v-if="user.email === 'admin@example.com'">Fuck Admin</h2>
+      <h2 v-if="user.email === 'admin@example.com'">Hello Admin</h2>
 
       <div class="row">
         <div class="col-sm-2">
@@ -40,6 +40,28 @@
         </h5>
       </div>
 
+      <hr>
+      <h3>My Posts</h3>
+
+      <div class="card mb-4" v-for="post in postByUser" :key="post.id">
+        <div class="card-header d-flex justify-content-between">
+        <div>
+          <a href="#">{{ post.title}}</a>
+          <small class="text-muted small ml-1">{{ post.created_at }}</small>
+        </div>
+          <div class="d-flex">
+            <a href="#" class="btn btn-secondary btn-sm mr-2" v-if="!post.publish"><i class="fas fa-hourglass-start"></i></a>
+            <router-link :to="{name: 'post-edit' , params: { id: post.id, post:post } }" class="btn btn-info btn-sm">
+              <i class="fas fa-pencil-alt"></i>
+            </router-link>
+            <button class="btn btn-danger btn-sm ml-2"><i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+            {{post.description}}
+        </div>
+      </div>
+
       <!-- Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
@@ -51,7 +73,7 @@
             </button>
           </div>
           <div class="modal-body pt-5 pb-4 px-4">
-            <form @submit.prevent="createPost" @keydown="form.onKeydown($event)">
+            <form @submit.prevent="updateProfile(user.id)" @keydown="form.onKeydown($event)">
               <div class="form-group">
                 <div class="row">
                   <div class="col-sm-12">
@@ -101,33 +123,11 @@
                   <div class="col-sm-12">
                     <div class="row">
                       <div class="col-sm-3 text-right">
-                        <img src="img/user.png" alt="" width="100px">
-                      </div>
-                      <div class="col-sm-8">
-                        <label for="title"><b>Profile :</b></label>
-                        <input
-                          type="file"
-                          name="name"
-                          placeholder="Enter username"
-                          class="form-control"
-                          :class="{ 'is-invalid': form.errors.has('name') }"
-                        />
-                        <has-error :form="form" field="name"></has-error>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="row">
-                      <div class="col-sm-3 text-right">
-                        <label for="title"><b>Phone :</b></label>
+                        <label for="phone"><b>Phone :</b></label>
                       </div>
                       <div class="col-sm-8">
                         <input
-                          v-model="form.name"
+                          v-model="form.phone"
                           type="text"
                           name="phone"
                           placeholder="Enter Phone number"
@@ -145,7 +145,7 @@
                   <div class="col-sm-12">
                     <div class="row">
                       <div class="col-sm-3 text-right">
-                        <label for="title"><b>Date of Birth :</b></label>
+                        <label for="dob"><b>Date of Birth :</b></label>
                       </div>
                       <div class="col-sm-8">
                         <input
@@ -166,16 +166,17 @@
                   <div class="col-sm-12">
                     <div class="row">
                       <div class="col-sm-3 text-right">
-                        <label for="decription"><b>Address :</b></label>
+                        <label for="address"><b>Address :</b></label>
                       </div>
                       <div class="col-sm-8">
-                        <textarea
-                          v-model="form.description"
+                        <input
+                          v-model="form.address"
+                          type="text"
                           name="address"
-                          class="form-control"
                           placeholder="Enter Address"
+                          class="form-control"
                           :class="{ 'is-invalid': form.errors.has('address') }"
-                        ></textarea>
+                        />
                         <has-error :form="form" field="address"></has-error>
                       </div>
                     </div>
@@ -197,10 +198,15 @@
 
 <script>
 import {Form} from 'vform';
+import $ from 'jquery';
+import axios from 'axios';
 export default {
   data() {
     return {
+      user_id:null,
       isLoggedIn: true,
+      address: '',
+      postByUser: {},
        // Create a new form instance
       form: new Form({
         name: "",
@@ -216,10 +222,26 @@ export default {
     getUser() {
       this.$store.dispatch("getUser");
     },
+    updateProfile(id){
+      this.form.put('http://127.0.0.1:8000/api/users/'+id).then( () => {
+        $('#editModal').modal('hide');
+        this.getUser();
+      })
+      .catch(errs => {
+        console.log(errs);
+      })
+    },
+    getPostUser(id = this.user_id){
+      axios.get('http://127.0.0.1:8000/api/userpost/'+ id) . then ( (response) => {
+        this.postByUser = response.data;
+      })
+    }
   },
   mounted() {
     this.getUser();
-    this.form.fill('')
+    this.form.fill(this.user);
+    this.user_id = this.user.id;
+    this.getPostUser();
   },
   computed: {
     user() {
